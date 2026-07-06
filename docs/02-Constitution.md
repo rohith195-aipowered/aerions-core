@@ -1,3 +1,0 @@
-# constitution
-
-Coming soon.

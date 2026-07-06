@@ -1,0 +1,9 @@
+{
+  "name": "aerions-core",
+  "private": true,
+  "version": "0.0.1",
+  "packageManager": "pnpm@11.10.0",
+  "scripts": {
+    "dev": "echo \"Aerions workspace initialized\""
+  }
+}

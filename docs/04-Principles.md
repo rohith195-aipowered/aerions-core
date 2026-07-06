@@ -1,3 +1,0 @@
-# principals 
-
-Coming soon.
