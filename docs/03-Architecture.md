@@ -1,25 +1,49 @@
 # Aerions Architecture
 
-Version: 0.1
+## Intelligence Operating Layer
+
+Every request entering Aerions follows the same lifecycle.
+
+Objective
+
+↓
+
+Context Engine
+
+↓
+
+Intent Engine
+
+↓
+
+Mission Planner
+
+↓
+
+Task Graph
+
+↓
+
+Capability Router
+
+↓
+
+Execution Engine
+
+↓
+
+Verification Engine
+
+↓
+
+Response
 
 ---
 
-## Purpose
+### Core Principle
 
-Aerions transforms a user's goal into the most efficient sequence of intelligent actions.
+Applications never select models.
 
-Applications should never choose models.
-
-Applications should describe outcomes.
+Applications express objectives.
 
 Aerions determines execution.
-
----
-
-## Core Philosophy
-
-Every request entering Aerions passes through multiple layers of understanding before any AI model is selected.
-
-Models are execution engines.
-
-Aerions is the decision engine.
