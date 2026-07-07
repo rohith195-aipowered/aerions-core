@@ -1,41 +1,79 @@
 # Aerions
 
-> Intelligence Orchestration Platform
+> Intelligence Operating Layer
+
+Aerions is an Intelligence Operating Layer designed to transform human objectives into successful execution.
+
+Instead of directly invoking AI models, Aerions understands objectives, gathers context, plans execution, determines whether intelligence is required, routes tasks to the best execution engine, evaluates results, and continuously learns.
 
 ---
 
-## Mission
+## Core Philosophy
 
-Build the infrastructure that allows every application to access intelligence without depending on a specific model, provider, or technology.
+Objectives over Prompts.
+
+Software before Intelligence.
+
+Planning before Execution.
+
+Models are Replaceable.
+
+Architecture is Permanent.
+
+---
+
+## Architecture
+
+```
+Objective
+
+↓
+
+Context
+
+↓
+
+Planner
+
+↓
+
+Capability Analyzer
+
+↓
+
+Software Executor
+      OR
+AI Router
+
+↓
+
+Decision Engine
+
+↓
+
+Memory
+
+↓
+
+Response
+```
 
 ---
 
 ## Vision
 
-Every intelligent application should run on Aerions.
+Aerions aims to become the operating layer for intelligence, enabling future applications to access intelligent capabilities without becoming dependent on specific AI providers.
 
 ---
 
-## First Principle
+## Current Status
 
-Users describe outcomes.
+🚧 Early Development
 
-Aerions determines execution.
-
----
-
-## Philosophy
-
-We are not building another AI application.
-
-We are building the infrastructure that AI applications run on.
-
-Models are temporary.
-
-Infrastructure is forever.
+The first production customer of Aerions is **Pristelle**, where the platform will be validated through real-world use before broader adoption.
 
 ---
 
-## Status
+## License
 
-🚧 Day 01 — Foundation
+Private Project
