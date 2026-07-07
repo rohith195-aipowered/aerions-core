@@ -6,193 +6,357 @@ Aerions is an Intelligence Operating Layer.
 
 Its responsibility is to transform human objectives into successful execution.
 
-Aerions is composed of independent modules, each with a single responsibility.
+Unlike traditional AI applications, Aerions does not immediately invoke an AI model. It first determines whether intelligence is required at all.
+
+Every component has a single responsibility and can be replaced independently without affecting the rest of the system.
 
 ---
 
-# High-Level Flow
+# High-Level Architecture
 
-Human Objective
-
-↓
-
-Objective Engine
-
-↓
-
-Context Engine
-
-↓
-
-Planner
-
-↓
-
-Router
-
-↓
-
-Executors
-
-↓
-
-Memory
-
-↓
-
-Response
+```
+                        Human Objective
+                               │
+                               ▼
+                     Objective Engine
+                               │
+                               ▼
+                      Context Engine
+                               │
+                               ▼
+                           Planner
+                               │
+                               ▼
+                    Capability Analyzer
+                    ┌──────────────────┐
+             YES    │                  │    NO
+   Software Can Do It               Intelligence Required
+                    │                  │
+                    ▼                  ▼
+         Software Executor        AI Router
+                    │                  │
+                    │          Select Best Model
+                    │                  │
+                    ▼                  ▼
+                Result            AI Execution
+                    └──────────┬───────────┘
+                               ▼
+                      Decision Engine
+                               │
+                               ▼
+                       Final Response
+```
 
 ---
 
-# Components
+# Component Responsibilities
 
 ## 1. Objective Engine
 
-Purpose:
+### Purpose
 
-Understand what the user actually wants.
+Convert natural language into structured objectives.
 
-Input:
+### Input
 
-Natural language objective.
+```
+Create a launch video for Pristelle.
+```
 
-Output:
+### Output
 
-Structured Objective.
+```json
+{
+  "type": "video_generation",
+  "priority": "high",
+  "objective": "Launch video for Pristelle"
+}
+```
+
+The Objective Engine never executes tasks.
+
+Its only responsibility is understanding intent.
 
 ---
 
 ## 2. Context Engine
 
-Purpose:
+### Purpose
 
-Gather every piece of information required before intelligence is used.
+Collect every piece of information required before execution begins.
 
-Possible sources include:
+Possible context sources include:
 
-- Website
-- Uploaded documents
-- Images
-- Previous conversations
-- Internal memory
+- Company Website
+- Uploaded Images
+- Documents
+- PDFs
+- GitHub Repositories
 - APIs
+- Previous Conversations
+- Internal Memory
+- Databases
 
 Output:
 
 Structured Context.
 
+No intelligence provider should be invoked before sufficient context has been collected.
+
 ---
 
 ## 3. Planner
 
-Purpose:
+### Purpose
 
-Convert objectives into executable steps.
+Transform objectives into executable plans.
 
 Example:
 
-Objective:
+Objective
 
-Launch Pristelle.
+```
+Launch Pristelle
+```
 
-Plan:
+Execution Plan
 
+```
 1. Analyze website
-2. Understand branding
-3. Build marketing strategy
-4. Select models
-5. Execute
+2. Extract branding
+3. Understand target audience
+4. Build campaign strategy
+5. Select execution methods
+```
 
-The planner never performs execution.
+The Planner never performs execution.
+
+Its only responsibility is planning.
 
 ---
 
-## 4. Router
+## 4. Capability Analyzer
 
-Purpose:
+### Purpose
 
-Choose the best intelligence provider for every step.
+Determine whether intelligence is actually required.
 
-The Router may select:
+This component asks a single question.
+
+> Can this task be completed through deterministic software?
+
+If YES
+
+↓
+
+Use Software Executor.
+
+If NO
+
+↓
+
+Use AI Router.
+
+This dramatically reduces unnecessary AI usage, latency, cost, and hallucinations.
+
+---
+
+## 5. Software Executor
+
+### Purpose
+
+Execute deterministic operations without AI.
+
+Examples include:
+
+- Reading files
+- Writing files
+- Parsing JSON
+- Calling APIs
+- Sending emails
+- Image resizing
+- Database queries
+- Deployments
+- Code execution
+- File conversions
+
+Software execution should always be preferred whenever possible.
+
+---
+
+## 6. AI Router
+
+### Purpose
+
+Select the best intelligence provider for each task.
+
+Routing decisions depend on:
+
+- Capability
+- Cost
+- Latency
+- Accuracy
+- Reliability
+- Context
+
+Possible providers include:
 
 - OpenAI
-- Gemini
-- Claude
+- Anthropic Claude
+- Google Gemini
 - Local Models
 - Future Providers
 
-Routing decisions depend on capability, cost, latency and quality.
+No provider should ever become permanently coupled to Aerions.
+
+Every provider is replaceable.
 
 ---
 
-## 5. Executors
+## 7. AI Execution
 
-Purpose:
-
-Execute tasks chosen by the Router.
+The selected model performs the requested intelligent task.
 
 Examples:
 
-- Generate code
-- Create images
-- Produce videos
-- Analyze documents
-- Search the web
-- Call APIs
+- Code generation
+- Image generation
+- Video generation
+- Writing
+- Translation
+- Research
+- Reasoning
 
-Executors do work.
-
-They never make planning decisions.
+Execution is isolated from planning and routing.
 
 ---
 
-## 6. Memory
+## 8. Decision Engine
 
-Purpose:
+### Purpose
 
-Store reusable knowledge.
+Evaluate execution results before returning them.
 
-Memory should improve future execution without requiring users to repeat information.
+Possible decisions include:
 
-Memory is platform-wide, not model-specific.
+- Return Result
+- Retry
+- Gather More Context
+- Switch Models
+- Ask User For Clarification
+- Execute Additional Steps
+
+The Decision Engine ensures Aerions produces reliable outputs rather than blindly accepting the first response.
+
+---
+
+## 9. Memory
+
+### Purpose
+
+Persist reusable knowledge.
+
+Memory improves future execution without requiring users to repeat information.
+
+Memory belongs to Aerions, not individual AI models.
 
 ---
 
 # Core Design Principles
 
-Every component should:
+Every component inside Aerions must:
 
-- Have one responsibility.
+- Solve exactly one responsibility.
 - Accept structured inputs.
 - Produce structured outputs.
 - Remain independently replaceable.
+- Be testable in isolation.
 
 ---
 
-# Replaceability
+# Why This Architecture Exists
 
-Every module inside Aerions should be replaceable.
+Traditional AI applications follow this pattern.
 
-Changing a Planner should not require changing the Router.
+```
+User
 
-Changing a Router should not require changing Executors.
+↓
 
-Changing AI providers should not affect the architecture.
+LLM
+
+↓
+
+Response
+```
+
+Aerions follows a different philosophy.
+
+```
+User Objective
+
+↓
+
+Understand Objective
+
+↓
+
+Gather Context
+
+↓
+
+Plan
+
+↓
+
+Determine Capability
+
+↓
+
+Software or Intelligence
+
+↓
+
+Evaluate
+
+↓
+
+Respond
+```
+
+The goal is not simply to call AI.
+
+The goal is to accomplish objectives using the most efficient combination of software and intelligence.
 
 ---
 
-# Goal
-
-Aerions should become the operating system responsible for coordinating intelligence across every application.
 # Future Components
 
-The following modules are expected to be introduced as Aerions evolves:
+The architecture has been designed to support future modules including:
 
 - Knowledge Graph
 - Workflow Engine
 - Tool Registry
 - Agent Runtime
-- Observability
-- Security Layer
-- Cost Optimizer
 - Learning Engine
+- Observability
+- Cost Optimizer
+- Security Layer
+- Distributed Execution
+- Multi-Agent Collaboration
+
+These components should integrate without requiring architectural redesign.
+
+---
+
+# Long-Term Goal
+
+Aerions should become the Intelligence Operating Layer powering the next generation of software.
+
+Applications describe outcomes.
+
+Aerions determines execution.
+
+Models evolve.
+
+Architecture remains.
